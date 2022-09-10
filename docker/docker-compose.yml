@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  liquibase-mariadb:
+    build:
+      context: ./maria
+      dockerfile: Dockerfile
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: liquibase_test
+      MARIADB_USER: liquibase
+      MARIADB_PASSWORD: liquibase

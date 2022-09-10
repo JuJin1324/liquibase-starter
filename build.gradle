@@ -1,0 +1,59 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.3'
+    id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+    id 'java'
+    id 'org.liquibase.gradle' version '2.1.0'
+}
+
+group = 'starter-liquibase'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    liquibaseRuntime.extendsFrom runtime
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.liquibase:liquibase-core:4.15.0'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Liquibase
+    liquibaseRuntime 'org.liquibase:liquibase-core:4.15.0'
+    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:3.0.2'
+    liquibaseRuntime 'info.picocli:picocli:4.6.3'
+    liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:4.15.0'
+    liquibaseRuntime 'org.mariadb.jdbc:mariadb-java-client'
+    liquibaseRuntime sourceSets.main.compileClasspath
+    liquibaseRuntime sourceSets.main.runtimeClasspath
+    liquibaseRuntime sourceSets.main.output
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+liquibase {
+    activities {
+        main {
+            url "jdbc:mariadb://localhost:3306/liquibase_test"
+            username "liquibase"
+            password "liquibase"
+            changeLogFile "src/main/resources/db/changelog/changelog-1.0.yml"
+        }
+    }
+    runList = "main"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
