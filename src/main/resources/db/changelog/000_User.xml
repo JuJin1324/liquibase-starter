@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="000-1" author="jujin">
+        <createTable tableName="user">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}" remarks="회원 ID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="uuid" type="binary(16)" remarks="회원 UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(32)" remarks="회원 이름"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="user"/>
+        </rollback>
+        <comment>회원 테이블 생성</comment>
+    </changeSet>
+
+    <changeSet id="000-2" author="jujin">
+        <sql dbms="mariadb, mysql">
+            ALTER TABLE USER
+                ADD COLUMN PHONE_NO VARCHAR(32) COMMENT '회원 폰 번호', ALGORITHM=INSTANT
+        </sql>
+        <rollback>
+            ALTER TABLE USER DROP COLUMN PHONE_NO, ALGORITHM=INSTANT
+        </rollback>
+        <comment>회원 폰 번호 칼럼 추가</comment>
+    </changeSet>
+
+    <changeSet id="000-3" author="jujin">
+        <sql dbms="mariadb, mysql">
+            ALTER TABLE USER
+                ADD COLUMN EMAIL_ADDRESS VARCHAR(128) COMMENT '회원 이메일 주소', ALGORITHM=INSTANT
+        </sql>
+        <rollback>
+            ALTER TABLE USER DROP COLUMN EMAIL_ADDRESS, ALGORITHM=INSTANT
+        </rollback>
+        <comment>회원 이메일 주소 칼럼 추가</comment>
+    </changeSet>
+
+</databaseChangeLog>

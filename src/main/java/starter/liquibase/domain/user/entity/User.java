@@ -12,7 +12,7 @@ import java.util.UUID;
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "uuid", columnDefinition = "BINARY(16)", updatable = false)
@@ -21,7 +21,6 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    // TODO: liquibase version control
-//    @Column(name = "phone_no")
-//    private String phoneNo;
+    @Column(name = "phone_no")
+    private String phoneNo;
 }

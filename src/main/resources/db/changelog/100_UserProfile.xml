@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="100-1" author="jujin">
+        <createTable tableName="user_profile">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}" remarks="회원 프로필 ID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nickname" type="varchar(32)" remarks="프로필 닉네임"/>
+            <column name="imageUrl" type="text" remarks="프로필 이미지 URL"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="user_profile"/>
+        </rollback>
+        <comment>회원 프로필 테이블 추가</comment>
+    </changeSet>
+
+</databaseChangeLog>

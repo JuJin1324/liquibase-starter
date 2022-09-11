@@ -45,10 +45,11 @@ dependencies {
 liquibase {
     activities {
         main {
+            driver "org.mariadb.jdbc.Driver"
             url "jdbc:mariadb://localhost:3306/liquibase_test"
             username "liquibase"
             password "liquibase"
-            changeLogFile "src/main/resources/db/changelog/changelog-1.0.yml"
+            changeLogFile "classpath:db/changelog/db.changelog-master.xml"
         }
     }
     runList = "main"
