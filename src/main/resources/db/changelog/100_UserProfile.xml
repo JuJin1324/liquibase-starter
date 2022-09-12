@@ -11,11 +11,31 @@
             </column>
             <column name="nickname" type="varchar(32)" remarks="프로필 닉네임"/>
             <column name="imageUrl" type="text" remarks="프로필 이미지 URL"/>
+            <column name="user_id" type="bigint" remarks="회원 ID">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
+
+        <addForeignKeyConstraint constraintName="user_profile_user_id_fk"
+                                 baseTableName="user_profile"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+
         <rollback>
+            <dropForeignKeyConstraint constraintName="user_profile_user_id_fk"
+                                      baseTableName="user_profile"/>
             <dropTable tableName="user_profile"/>
         </rollback>
         <comment>회원 프로필 테이블 추가</comment>
     </changeSet>
 
+    <changeSet id="100-2" author="jujin" context="local">
+        <sqlFile dbms="mariadb, mysql"
+                 path="data/local/100-2_user_profile.sql"
+                 relativeToChangelogFile="true"
+                 endDelimiter=";"
+        />
+        <comment>회원 프로필 테스트용 데이터 삽입</comment>
+    </changeSet>
 </databaseChangeLog>

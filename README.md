@@ -23,7 +23,8 @@
 > 
 > liquibase {
 >     activities {
->         main {
+>         local {
+>             contexts 'local'
 >             driver "org.mariadb.jdbc.Driver"
 >             url "jdbc:mariadb://localhost:3306/liquibase_test"
 >             username "liquibase"
@@ -32,7 +33,7 @@
 >             changeLogFile "classpath:db/changelog/db.changelog-master.xml"
 >         }
 >     }
->     runList = "main"
+>     runList = "local"
 > } 
 > ```
 > 
@@ -50,6 +51,10 @@
 > 각 테이블 명으로 xml 을 만든 후 xml 파일 안에서 changeSet 을 생성해서 버전관리를 한다.  
 > 가장 먼저 마스터 파일인 `changelog-master.xml` 을 생성한 후에 각 DB 테이블 별로 xml 파일을 만들어서 `changelog-master.xml`
 > 에 `<include>` 한다.
+
+### context
+> `changeSet` 태그 및 `include` 태그에 `context` 애트리뷰트를 추가해서 컨텍스트에 따른 관리 가능  
+> ex. local, dev, prod 로 관리 가능 
 
 ## update
 > DB 테이블 xml 에 changeSet 생성 후에 `gradle:liquibase update` 를 통해서 변경 내용을 DB 에 반영하거나

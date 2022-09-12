@@ -1,3 +1,11 @@
+import org.yaml.snakeyaml.Yaml
+
+buildscript {
+    dependencies {
+        classpath "org.yaml:snakeyaml:1.30"
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.7.3'
     id 'io.spring.dependency-management' version '1.0.13.RELEASE'
@@ -42,17 +50,39 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+def app = new Yaml()
+        .loadAll(new File("$projectDir/src/main/resources/application.yml").newInputStream())
+        .first()
+
 liquibase {
     activities {
-        main {
+        local {
             driver "org.mariadb.jdbc.Driver"
             url "jdbc:mariadb://localhost:3306/liquibase_test"
             username "liquibase"
             password "liquibase"
             changeLogFile "classpath:db/changelog/db.changelog-master.xml"
+            contexts 'local'
+        }
+        dev {
+            driver "org.mariadb.jdbc.Driver"
+            url "jdbc:mariadb://localhost:3306/liquibase_dev"
+            username "liquibasedev"
+            password "liquibasedev"
+            changeLogFile "classpath:db/changelog/db.changelog-master.xml"
+            contexts 'dev'
+        }
+        prod {
+            driver "org.mariadb.jdbc.Driver"
+            url "jdbc:mariadb://localhost:3306/liquibase_prod"
+            username "liquibaseprod"
+            password "liquibaseprod"
+            changeLogFile "classpath:db/changelog/db.changelog-master.xml"
+            contexts 'prod'
         }
     }
-    runList = "main"
+
+    runList = app.spring.profiles.active
 }
 
 tasks.named('test') {

@@ -42,4 +42,12 @@
         <comment>회원 이메일 주소 칼럼 추가</comment>
     </changeSet>
 
+    <changeSet id="000-4" author="jujin" context="local">
+        <sqlFile dbms="mariadb"
+                 path="data/local/000-4_user.sql"
+                 relativeToChangelogFile="true"
+                 endDelimiter=";"
+        />
+        <comment>회원 테스트용 데이터 삽입</comment>
+    </changeSet>
 </databaseChangeLog>

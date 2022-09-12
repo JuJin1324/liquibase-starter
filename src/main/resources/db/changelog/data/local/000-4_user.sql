@@ -1,0 +1,5 @@
+INSERT INTO USER (ID, UUID, NAME, PHONE_NO, EMAIL_ADDRESS)
+VALUES (1, UNHEX(REPLACE(uuid(), '-', '')), '홍길동', '01012340001', 'test1@gmail.com');
+
+INSERT INTO USER (ID, UUID, NAME, PHONE_NO, EMAIL_ADDRESS)
+VALUES (2, UNHEX(REPLACE(uuid(), '-', '')), '홍길순', '01012340002', 'test2@gmail.com');
