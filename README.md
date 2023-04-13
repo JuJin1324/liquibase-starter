@@ -11,11 +11,12 @@
 > 
 > dependencies {
 >     // Liquibase
+>     //implementation 'org.liquibase:liquibase-core:4.15.0'
 >     liquibaseRuntime 'org.liquibase:liquibase-core:4.15.0'
 >     liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:3.0.2'
 >     liquibaseRuntime 'info.picocli:picocli:4.6.3'
 >     liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:4.15.0'
->     liquibaseRuntime 'org.mariadb.jdbc:mariadb-java-client'
+>     liquibaseRuntime 'mysql:mysql-connector-java:8.0.31'
 >     liquibaseRuntime sourceSets.main.compileClasspath
 >     liquibaseRuntime sourceSets.main.runtimeClasspath
 >     liquibaseRuntime sourceSets.main.output
@@ -23,15 +24,14 @@
 > 
 > liquibase {
 >     activities {
->         local {
->             contexts 'local'
->             driver "org.mariadb.jdbc.Driver"
->             url "jdbc:mariadb://localhost:3306/liquibase_test"
->             username "liquibase"
->             password "liquibase"
->             // changeLogFile 의 경로는 application.yml 과 동일하게 맞춰준다.
->             changeLogFile "classpath:db/changelog/db.changelog-master.xml"
->         }
+>        local {
+>            driver "org.mariadb.jdbc.Driver"
+>            url "jdbc:mysql://localhost:3312/liquibase_local?serverTimezone=UTC&characterEncoding=UTF-8"
+>            username "liquibase_starter"
+>            password "liquibase_starter"
+>            changeLogFile "classpath:db/changelog/db.changelog-master.xml"
+>            contexts 'local'
+>        }
 >     }
 >     runList = "local"
 > } 
@@ -44,13 +44,13 @@
 >         change-log: classpath:db/changelog/changelog-master.xml
 >         enabled: true
 > ``` 
+> 위의 설정이 적용되려면 build.gradle 의 dependnecies 에서   
+> `liquibaseRuntime 'org.liquibase:liquibase-core:4.15.0'` 이 아닌   
+> `implementation 'org.liquibase:liquibase-core:4.15.0'` 로 선언되어야 한다.  
 
 ## changelog
 ### 관리
-> flyway 와 다르게 liquibase 는 각 DB 테이블 별로 xml 을 만들어서 버전 관리가 가능하다.      
-> 각 테이블 명으로 xml 을 만든 후 xml 파일 안에서 changeSet 을 생성해서 버전관리를 한다.  
-> 가장 먼저 마스터 파일인 `changelog-master.xml` 을 생성한 후에 각 DB 테이블 별로 xml 파일을 만들어서 `changelog-master.xml`
-> 에 `<include>` 한다.
+> 가장 먼저 마스터 파일인 `changelog-master.xml` 을 생성한 후에 각 DB 테이블 별로 xml 파일을 만들어서 `changelog-master.xml` 에 `<include>` 한다.
 
 ### context
 > `changeSet` 태그 및 `include` 태그에 `context` 애트리뷰트를 추가해서 컨텍스트에 따른 관리 가능  

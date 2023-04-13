@@ -17,7 +17,7 @@ spring:
                 jdbc:
                     time_zone: UTC
                     batch_size: 1000
-        database-platform: org.hibernate.dialect.MariaDB103Dialect
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     liquibase:
         change-log: classpath:db/changelog/db.changelog-master.xml
         enabled: true
@@ -35,7 +35,7 @@ spring:
         activate:
             on-profile: local
     datasource:
-        driver-class-name: org.mariadb.jdbc.Driver
-        url: jdbc:mariadb://localhost:3306/liquibase_test
-        username: liquibase
-        password: liquibase
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3312/liquibase_local?serverTimezone=UTC&characterEncoding=UTF-8
+        username: liquibase_starter
+        password: liquibase_starter

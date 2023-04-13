@@ -1,11 +1,3 @@
-import org.yaml.snakeyaml.Yaml
-
-buildscript {
-    dependencies {
-        classpath "org.yaml:snakeyaml:1.30"
-    }
-}
-
 plugins {
     id 'org.springframework.boot' version '2.7.3'
     id 'io.spring.dependency-management' version '1.0.13.RELEASE'
@@ -31,18 +23,20 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.liquibase:liquibase-core:4.15.0'
-    compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    runtimeOnly 'mysql:mysql-connector-java:8.0.31'
+
     // Liquibase
+    //implementation 'org.liquibase:liquibase-core:4.15.0'
     liquibaseRuntime 'org.liquibase:liquibase-core:4.15.0'
     liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:3.0.2'
     liquibaseRuntime 'info.picocli:picocli:4.6.3'
     liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:4.15.0'
-    liquibaseRuntime 'org.mariadb.jdbc:mariadb-java-client'
+    liquibaseRuntime 'mysql:mysql-connector-java:8.0.31'
     liquibaseRuntime sourceSets.main.compileClasspath
     liquibaseRuntime sourceSets.main.runtimeClasspath
     liquibaseRuntime sourceSets.main.output
@@ -50,39 +44,27 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-def app = new Yaml()
-        .loadAll(new File("$projectDir/src/main/resources/application.yml").newInputStream())
-        .first()
-
 liquibase {
     activities {
         local {
             driver "org.mariadb.jdbc.Driver"
-            url "jdbc:mariadb://localhost:3306/liquibase_test"
-            username "liquibase"
-            password "liquibase"
+            url "jdbc:mysql://localhost:3312/liquibase_local?serverTimezone=UTC&characterEncoding=UTF-8"
+            username "liquibase_starter"
+            password "liquibase_starter"
             changeLogFile "classpath:db/changelog/db.changelog-master.xml"
             contexts 'local'
         }
         dev {
             driver "org.mariadb.jdbc.Driver"
-            url "jdbc:mariadb://localhost:3306/liquibase_dev"
+            url "jdbc:mysql://localhost:3312/liquibase_dev?serverTimezone=UTC&characterEncoding=UTF-8"
             username "liquibasedev"
             password "liquibasedev"
             changeLogFile "classpath:db/changelog/db.changelog-master.xml"
             contexts 'dev'
         }
-        prod {
-            driver "org.mariadb.jdbc.Driver"
-            url "jdbc:mariadb://localhost:3306/liquibase_prod"
-            username "liquibaseprod"
-            password "liquibaseprod"
-            changeLogFile "classpath:db/changelog/db.changelog-master.xml"
-            contexts 'prod'
-        }
     }
 
-    runList = app.spring.profiles.active
+    runList = "local"
 }
 
 tasks.named('test') {
