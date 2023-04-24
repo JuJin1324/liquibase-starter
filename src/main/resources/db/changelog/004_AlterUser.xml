@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="004" author="jujin">
+        <comment>회원 이메일 주소 칼럼 추가</comment>
+        <sql dbms="mariadb, mysql">
+            ALTER TABLE USER
+                ADD COLUMN EMAIL_ADDRESS VARCHAR(128) COMMENT '회원 이메일 주소', ALGORITHM=INSTANT
+        </sql>
+        <rollback>
+            ALTER TABLE USER DROP COLUMN EMAIL_ADDRESS, ALGORITHM=INSTANT
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -4,7 +4,8 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="100-1" author="jujin">
+    <changeSet id="002" author="jujin">
+        <comment>회원 프로필 테이블 추가</comment>
         <createTable tableName="user_profile">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}" remarks="회원 프로필 ID">
                 <constraints primaryKey="true" nullable="false"/>
@@ -27,15 +28,5 @@
                                       baseTableName="user_profile"/>
             <dropTable tableName="user_profile"/>
         </rollback>
-        <comment>회원 프로필 테이블 추가</comment>
-    </changeSet>
-
-    <changeSet id="100-2" author="jujin" context="local">
-        <sqlFile dbms="mariadb, mysql"
-                 path="data/local/100-2_user_profile.sql"
-                 relativeToChangelogFile="true"
-                 endDelimiter=";"
-        />
-        <comment>회원 프로필 테스트용 데이터 삽입</comment>
     </changeSet>
 </databaseChangeLog>

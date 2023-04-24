@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="005" author="jujin" context="local">
+        <comment>회원 테스트용 데이터 삽입</comment>
+        <sqlFile dbms="mariadb, mysql"
+                 path="data/local/005_user.sql"
+                 relativeToChangelogFile="true"
+                 endDelimiter=";"
+        />
+    </changeSet>
+</databaseChangeLog>

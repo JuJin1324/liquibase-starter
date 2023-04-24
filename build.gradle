@@ -16,6 +16,13 @@ configurations {
     liquibaseRuntime.extendsFrom runtime
 }
 
+task copyResources(type: Copy) {
+    from "${projectDir}/src/main/resources"
+    into "${buildDir}/resources/main"
+}
+compileJava.dependsOn copyResources
+update.dependsOn copyResources
+
 repositories {
     mavenCentral()
 }
@@ -47,20 +54,20 @@ dependencies {
 liquibase {
     activities {
         local {
-            driver "org.mariadb.jdbc.Driver"
+            contexts 'local'
+            driver "com.mysql.cj.jdbc.Driver"
             url "jdbc:mysql://localhost:3312/liquibase_local?serverTimezone=UTC&characterEncoding=UTF-8"
             username "liquibase_starter"
             password "liquibase_starter"
             changeLogFile "classpath:db/changelog/db.changelog-master.xml"
-            contexts 'local'
         }
         dev {
-            driver "org.mariadb.jdbc.Driver"
+            contexts 'dev'
+            driver "com.mysql.cj.jdbc.Driver"
             url "jdbc:mysql://localhost:3312/liquibase_dev?serverTimezone=UTC&characterEncoding=UTF-8"
             username "liquibasedev"
             password "liquibasedev"
             changeLogFile "classpath:db/changelog/db.changelog-master.xml"
-            contexts 'dev'
         }
     }
 

@@ -8,6 +8,10 @@
     <property name="now" value="now(6)" dbms="mariadb, mysql"/>
     <property name="uuid" value="uuid()" dbms="mariadb, mysql"/>
 
-    <include file="000_User.xml" relativeToChangelogFile="true" />
-    <include file="100_UserProfile.xml" relativeToChangelogFile="true" />
+    <include file="001_CreateUser.xml" relativeToChangelogFile="true" />
+    <include file="002_CreateUserProfile.xml" relativeToChangelogFile="true" />
+    <include file="003_AlterUser.xml" relativeToChangelogFile="true" />
+    <include file="004_AlterUser.xml" relativeToChangelogFile="true" />
+    <include file="005_InsertUser.xml" relativeToChangelogFile="true" />
+    <include file="006_InsertUserProfile.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

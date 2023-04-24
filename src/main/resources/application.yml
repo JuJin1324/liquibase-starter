@@ -17,7 +17,7 @@ spring:
                 jdbc:
                     time_zone: UTC
                     batch_size: 1000
-        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        database-platform: org.hibernate.dialect.MySQL8Dialect
     liquibase:
         change-log: classpath:db/changelog/db.changelog-master.xml
         enabled: true
