@@ -4,10 +4,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="005" author="jujin" context="local">
-        <comment>회원 테스트용 데이터 삽입</comment>
-        <sqlFile dbms="mariadb, mysql"
-                 path="data/local/005_user.sql"
+    <changeSet id="changelog-5.0" author="jujin" context="local">
+        <comment>회원 프로필 테스트용 데이터 삽입</comment>
+        <sqlFile path="data/local/5.0-InsertUserProfile.sql"
                  relativeToChangelogFile="true"
                  endDelimiter=";"
         />

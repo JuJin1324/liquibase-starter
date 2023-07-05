@@ -4,14 +4,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <property name="autoIncrement" value="true" dbms="mariadb, mysql" />
-    <property name="now" value="now(6)" dbms="mariadb, mysql"/>
-    <property name="uuid" value="uuid()" dbms="mariadb, mysql"/>
+    <property name="usingAutoIncrement" value="true"/>
+    <property name="now" value="now(3)"/>
+    <property name="uuid" value="uuid()"/>
 
-    <include file="001_CreateUser.xml" relativeToChangelogFile="true" />
-    <include file="002_CreateUserProfile.xml" relativeToChangelogFile="true" />
-    <include file="003_AlterUser.xml" relativeToChangelogFile="true" />
-    <include file="004_AlterUser.xml" relativeToChangelogFile="true" />
-    <include file="005_InsertUser.xml" relativeToChangelogFile="true" />
-    <include file="006_InsertUserProfile.xml" relativeToChangelogFile="true" />
+    <include file="db.changelog-1.0-CreateUser.xml" relativeToChangelogFile="true"/>
+    <include file="db.changelog-2.0-CreateUserProfile.xml" relativeToChangelogFile="true"/>
+    <include file="db.changelog-3.0-AlterUser.xml" relativeToChangelogFile="true"/>
+    <include file="db.changelog-4.0-InsertUser.xml" relativeToChangelogFile="true"/>
+    <include file="db.changelog-5.0-InsertUserProfile.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

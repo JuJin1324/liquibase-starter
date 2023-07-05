@@ -1,5 +1,14 @@
 # liquibase-starter
 
+## Install
+### macOS
+> 설치 Command: `brew install liquibase`  
+
+### Linux
+> Ubuntu 설치 Command: `sudo snap install liquibase`
+
+---
+
 ## Gradle
 ### Liquibase Plugin
 > build.gradle  
@@ -70,8 +79,9 @@
 > 태그 안에 정의해야한다.   
 > ex. USER 테이블에 PHONE_NO 칼럼을 추가하는 changeSet 안에 rollback 태그로 롤백 시 실행되어야할 sql 을 정의하였다.
 > ```xml
-> <changeSet id="003" author="jujin">
->     <sql dbms="mariadb, mysql">
+> <changeSet id="changelog-3.0" author="jujin">
+>     <comment>회원 폰 번호 칼럼 추가</comment>
+>     <sql>
 >         ALTER TABLE USER
 >             ADD COLUMN PHONE_NO VARCHAR(32) COMMENT '회원 폰 번호', ALGORITHM=INSTANT
 >     </sql>
@@ -82,6 +92,18 @@
 > ``` 
 
 ### gradle rollbackCount command
+> **Update**  
+> databasechangelog 테이블의 changelog 보다 db.changelog-master.xml 의 내용이 앞서가는 경우 
+> 앞서가는 버전에 대해서 DBMS 에 반영한다.   
+> `gradle update`  
+> 
+> **UpdateSql**  
+> databasechangelog 테이블의 changelog 보다 db.changelog-master.xml 의 내용이 앞서가는 경우 
+> 앞서가는 버전에 대해서 DBMS 에 반영하기 위한 쿼리의 내용을 콘솔에 출력한다. DBMS 에 업데이트는 반영되지 않는다.
+> 사용자가 출력된 업데이트 쿼리로 직접 작업하길 원할 때 사용한다.  
+> `gradle updateSql`  
+> 
+> **Rollback**  
 > rollback 은 다음과 같이 Gradle 의 rollbackCount Task 를 통해서 rollback 한다.
 > `gradle rollbackCount -PliquibaseCommandValue=1`
 
@@ -90,26 +112,78 @@
 
 ---
 
-## changelog
-### 관리
-> 가장 먼저 마스터 파일인 `changelog-master.xml` 을 생성한 후에 각 DB 테이블 별로 xml 파일을 만들어서 `changelog-master.xml` 에 `<include>` 한다.  
-> changelog-master.xml
+## db.changelog-master.xml
+> 가장 먼저 마스터 파일인 `db.changelog-master.xml` 을 생성한 후에 각 DB 테이블 별로 xml 파일을 만들어서 `changelog-master.xml` 에 `<include>` 한다.  
+> db.changelog-master.xml
 > ```xml
 > <?xml version="1.0" encoding="utf-8"?>
 > <databaseChangeLog
->   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
->   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
->   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+> xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+> xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+> xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 > 
->     <property name="autoIncrement" value="true" dbms="mariadb, mysql" />
->     <property name="now" value="now(6)" dbms="mariadb, mysql"/>
->     <property name="uuid" value="uuid()" dbms="mariadb, mysql"/>
+>     <property name="usingAutoIncrement" value="true"/>
+>     <property name="now" value="now(3)"/>
+>     <property name="uuid" value="uuid()"/>
 > 
->     <include file="001_CreateUser.xml" relativeToChangelogFile="true" />
->     <include file="002_CreateUserProfile.xml" relativeToChangelogFile="true" />
->     <include file="003_AlterUser.xml" relativeToChangelogFile="true" />
->     <include file="004_AlterUser.xml" relativeToChangelogFile="true" />
->     <include file="005_InsertUserProfile.xml" relativeToChangelogFile="true" />
->     <include file="006_InsertUser.xml" relativeToChangelogFile="true" />
+>     <include file="db.changelog-1.0-CreateUser.xml" relativeToChangelogFile="true"/>
+>     <include file="db.changelog-2.0-CreateUserProfile.xml" relativeToChangelogFile="true"/>
+>     <include file="db.changelog-3.0_AlterUser.xml" relativeToChangelogFile="true"/>
+>     <include file="db.changelog-3.1-AlterUser.xml" relativeToChangelogFile="true"/>
+>     <include file="db.changelog-4.0-InsertUser.xml" relativeToChangelogFile="true"/>
+>     <include file="db.changelog-5.0-InsertUserProfile.xml" relativeToChangelogFile="true"/>
 > </databaseChangeLog>
 > ```
+
+### property
+> changelog-master.xml 파일에 property 태그로 변수화하여 include 한 파일에 사용한다.    
+> 여기서 사용한 `usingAutoIncrement` 는 autoIncrement 사용 여부를 property 에 정의하여 변수화하였다.  
+
+### include
+> db.changelog-master.xml 파일 안에 직접 changeSet 를 정의하지 않고 파일로 나눠서 include 시키는 방식으로 관리한다.  
+> relativeToChangelogFile="true" 를 주어서 `file` 값에 db.changelog-master.xml 파일을 기준으로 상대경로로 파일명만 적는다.  
+
+---
+
+## ChangeSet 파일
+### 파일명 형식
+> `db.changelog-<version>-<쿼리 제목>.xml`    
+> version 은 1.0 -> 2.0 -> 3.0 으로 앞의 숫자만 늘린다.    
+> version 에서 뒤의 숫자가 늘어나는 경우는 파일 내부에서 ChangeSet 이 2개 이상인 경우에 첫번째 ChangeSet 에는 1.0, 두번째 ChangeSet 에는 1.1 로
+> 늘려나가게 관리한다.  
+
+### changeSet
+> 변경점이 일어난 부분이다. 일반적으로 하나의 ChangeSet 에는 하나의 쿼리만 사용하자.  
+> `id`: ChangeSet 의 ID 이다. "changelog-1.0" 과 같이 파일명으로 사용한 버전을 적시한다. 하나의 파일에 ChangeSet 이 2개 이상인 경우 
+> 각 id 에 "changelog-1.0", "changelog-1.1", "changelog-1.2", ... 이런식으로 마이너 버전을 늘려나간다.  
+> `author`: 작성자의 이름을 적는다.  
+
+### comment
+> liquibase 를 통해서 쿼리를 실행하게 되면 `databasechangelog` 테이블이 생성되게 된다.  
+> databasechangelog 테이블의 comment 칼럼에 `comment` 태그 안에 적은 내용이 담기게 된다.  
+
+### createTable
+> TODO
+
+### addNotNullConstraint
+> ```xml
+> <addNotNullConstraint columnName="sender" columnDataType="varchar(60)" 
+>     tableName="email_sms_send_log" schemaName="liquibase_starter"/>
+> ```
+
+### addForeignKeyConstraint
+> TODO
+
+### createIndex 
+> ```xml
+> <createIndex indexName="company_uk_email_domain" schemaName="move_cloud"
+>              tableName="company" unique="true">
+>     <column name="email_domain"/>
+> </createIndex>
+> ```
+
+### sql
+> TODO
+
+### rollback
+> TODO

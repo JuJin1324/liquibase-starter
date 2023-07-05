@@ -4,9 +4,20 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="004" author="jujin">
+    <changeSet id="changelog-3.0" author="jujin">
+        <comment>회원 폰 번호 칼럼 추가</comment>
+        <sql>
+            ALTER TABLE USER
+                ADD COLUMN PHONE_NO VARCHAR(32) COMMENT '회원 폰 번호', ALGORITHM=INSTANT
+        </sql>
+        <rollback>
+            ALTER TABLE USER DROP COLUMN PHONE_NO, ALGORITHM=INSTANT
+        </rollback>
+    </changeSet>
+
+    <changeSet id="changelog-3.1" author="jujin">
         <comment>회원 이메일 주소 칼럼 추가</comment>
-        <sql dbms="mariadb, mysql">
+        <sql>
             ALTER TABLE USER
                 ADD COLUMN EMAIL_ADDRESS VARCHAR(128) COMMENT '회원 이메일 주소', ALGORITHM=INSTANT
         </sql>
