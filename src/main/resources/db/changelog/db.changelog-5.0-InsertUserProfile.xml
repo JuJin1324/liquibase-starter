@@ -7,8 +7,12 @@
     <changeSet id="changelog-5.0" author="jujin" context="local">
         <comment>회원 프로필 테스트용 데이터 삽입</comment>
         <sqlFile path="data/local/5.0-InsertUserProfile.sql"
-                 relativeToChangelogFile="true"
-                 endDelimiter=";"
-        />
+                 relativeToChangelogFile="true"/>
+
+        <rollback>
+            <sql>
+                TRUNCATE USER_PROFILE;
+            </sql>
+        </rollback>
     </changeSet>
 </databaseChangeLog>

@@ -15,7 +15,7 @@
 > build.gradle 의 liquibase.activities.main.changeLogFile 의 경로는 application.yml 과 동일하게 맞춰준다.   
 > ```groovy
 > plugins {
->     id 'org.liquibase.gradle' version '2.1.0'
+>     id 'org.liquibase.gradle' version '2.2.0'
 > }
 > 
 > task copyResources(type: Copy) {
@@ -28,25 +28,21 @@
 > dependencies {
 >     // Liquibase
 >     //implementation 'org.liquibase:liquibase-core:4.15.0'
->     liquibaseRuntime 'org.liquibase:liquibase-core:4.15.0'
+>     liquibaseRuntime 'org.liquibase:liquibase-core:4.16.1'
 >     liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:3.0.2'
->     liquibaseRuntime 'info.picocli:picocli:4.6.3'
->     liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:4.15.0'
+>     liquibaseRuntime 'info.picocli:picocli:4.6.1'
 >     liquibaseRuntime 'mysql:mysql-connector-java:8.0.31'
->     liquibaseRuntime sourceSets.main.compileClasspath
->     liquibaseRuntime sourceSets.main.runtimeClasspath
->     liquibaseRuntime sourceSets.main.output
 > }
 > 
 > liquibase {
 >     activities {
 >        local {
 >            contexts 'local'
+>            changelogFile "src/main/resources/db/changelog/db.changelog-master.xml"
 >            driver "com.mysql.cj.jdbc.Driver"
 >            url "jdbc:mysql://localhost:3312/liquibase_local?serverTimezone=UTC&characterEncoding=UTF-8"
 >            username "liquibase_starter"
 >            password "liquibase_starter"
->            changeLogFile "classpath:db/changelog/db.changelog-master.xml"
 >        }
 >     }
 >     runList = "local"
@@ -161,29 +157,129 @@
 ### comment
 > liquibase 를 통해서 쿼리를 실행하게 되면 `databasechangelog` 테이블이 생성되게 된다.  
 > databasechangelog 테이블의 comment 칼럼에 `comment` 태그 안에 적은 내용이 담기게 된다.  
+> ```xml
+> <changeSet id="changelog-X.0" author="jujin">
+>     <comment>회원 프로필 테이블 추가</comment>
+>     ...
+> </changeSet>
+> ```
 
 ### createTable
-> TODO
-
-### addNotNullConstraint
+> 예시
 > ```xml
-> <addNotNullConstraint columnName="sender" columnDataType="varchar(60)" 
->     tableName="email_sms_send_log" schemaName="liquibase_starter"/>
+> <changeSet id="changelog-X.0" author="jujin">
+>     <createTable tableName="user_profile">
+>         <column name="id" type="bigint" autoIncrement="${usingAutoIncrement}" remarks="회원 프로필 ID">
+>             <constraints primaryKey="true" nullable="false"/>
+>         </column>
+>         <column name="nickname" type="varchar(32)" remarks="프로필 닉네임"/>
+>         <column name="imageUrl" type="text" remarks="프로필 이미지 URL"/>
+>         <column name="user_id" type="bigint" remarks="회원 ID">
+>             <constraints nullable="false"/>
+>         </column>
+>     </createTable>
+> </changeSet>
 > ```
+> column 태그로 칼럼을 정의한다.  
+> primary key 지정의 경우 column 태그 안에 constraints 태그를 통해서 지정한다.    
+> 칼럼의 not null 지정의 경우 column 태그 안에 constraints 태그를 통해서 지정한다.  
+>
+> **참조사이트**  
+> [Liquibase - createTable](https://docs.liquibase.com/change-types/create-table.html)
+
 
 ### addForeignKeyConstraint
-> TODO
+> 예시
+> ```xml
+> <changeSet id="changelog-X.0" author="jujin">
+>     <createTable tableName="user_profile">
+>         ...
+>     </createTable>
+> 
+>     <addForeignKeyConstraint constraintName="user_profile_user_id_fk"
+>                              baseTableName="user_profile"
+>                              baseColumnNames="user_id"
+>                              referencedTableName="user"
+>                              referencedColumnNames="id"/>
+> </changeSet>
+> ```
+> foreign key 지정의 경우 column 태그에 직접 지정할 순 없고 addForeignKeyConstraint 태그를 사용하여 지정한다.  
+>  
+> **참조사이트**  
+> [Liquibase - addForeignKeyConstraint](https://docs.liquibase.com/change-types/add-foreign-key-constraint.html)
+
 
 ### createIndex 
+> 예시
 > ```xml
-> <createIndex indexName="company_uk_email_domain" schemaName="move_cloud"
->              tableName="company" unique="true">
->     <column name="email_domain"/>
-> </createIndex>
+> <changeSet id="changelog-X.0" author="jujin">
+>     <createIndex indexName="user_uk_uuid" schemaName="liquibase_local"
+>                  tableName="user" unique="true">
+>         <column name="uuid"/>
+>     </createIndex>
+>     <createIndex indexName="user_ix_name" schemaName="liquibase_local"
+>                  tableName="user">
+>         <column name="name"/>
+>     </createIndex>
+> </changeSet>
 > ```
+> 
+> **참조사이트**  
+> [Liquibase - createIndex](https://docs.liquibase.com/change-types/create-index.html)
 
 ### sql
-> TODO
+> 예시
+> ```xml
+> <changeSet id="changelog-X.0" author="jujin">
+>     <sql>
+>         ALTER TABLE USER
+>             ADD COLUMN PHONE_NO VARCHAR(20) COMMENT '회원 폰 번호', ALGORITHM=INSTANT;
+>     </sql>
+> </changeSet>
+> ```
+>
+> **참조사이트**  
+> [Liquibase - sql](https://docs.liquibase.com/change-types/sql.html)
+ 
 
 ### rollback
-> TODO
+> sql 태그의 rollback 예시
+> ```xml
+> <changeSet id="changelog-X.0" author="jujin">
+>     <sql>
+>         ALTER TABLE USER
+>             ADD COLUMN PHONE_NO VARCHAR(20) COMMENT '회원 폰 번호', ALGORITHM=INSTANT;
+>     </sql> 
+>     <rollback>
+>         ALTER TABLE USER DROP COLUMN EMAIL_ADDRESS, ALGORITHM=INSTANT;
+>     </rollback>
+> </changeSet>
+> ```
+>
+> createTable 태그의 rollback 예시  
+> ```xml
+> <changeSet id="changelog-X.0" author="jujin">
+>     <createTable tableName="user">
+>         ...
+>     </createTable>
+>     <rollback>
+>         <dropTable tableName="user"/>
+>     </rollback>
+> </changeSet>
+> ```
+>
+> **참조사이트**  
+> [Liquibase - rollback](https://docs.liquibase.com/workflows/liquibase-community/automatic-custom-rollbacks.html)
+
+### sqlFile
+> 예제
+> ```xml
+> <changeSet id="changelog-X.0" author="jujin">
+>     <sqlFile path="data/local/4.0-InsertUser.sql"
+>              relativeToChangelogFile="true"/>
+> </changeSet>
+> ```
+> relativeToChangelogFile="true" 를 주어서 `path` 값에 changeSet 을 담은 파일을 기준으로 상대경로로 적는다.  
+>
+> **참조사이트**  
+> [Liquibase - sqlFile](https://docs.liquibase.com/change-types/sql-file.html)

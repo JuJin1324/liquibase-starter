@@ -11,7 +11,7 @@
                 ADD COLUMN PHONE_NO VARCHAR(32) COMMENT '회원 폰 번호', ALGORITHM=INSTANT
         </sql>
         <rollback>
-            ALTER TABLE USER DROP COLUMN PHONE_NO, ALGORITHM=INSTANT
+            ALTER TABLE USER DROP COLUMN PHONE_NO, ALGORITHM=INSTANT;
         </rollback>
     </changeSet>
 
@@ -19,10 +19,10 @@
         <comment>회원 이메일 주소 칼럼 추가</comment>
         <sql>
             ALTER TABLE USER
-                ADD COLUMN EMAIL_ADDRESS VARCHAR(128) COMMENT '회원 이메일 주소', ALGORITHM=INSTANT
+                ADD COLUMN EMAIL_ADDRESS VARCHAR(128) COMMENT '회원 이메일 주소', ALGORITHM=INSTANT;
         </sql>
         <rollback>
-            ALTER TABLE USER DROP COLUMN EMAIL_ADDRESS, ALGORITHM=INSTANT
+            ALTER TABLE USER DROP COLUMN EMAIL_ADDRESS, ALGORITHM=INSTANT;
         </rollback>
     </changeSet>
 </databaseChangeLog>

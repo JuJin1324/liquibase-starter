@@ -7,8 +7,6 @@
     <changeSet id="changelog-4.0" author="jujin" context="local">
         <comment>회원 테스트용 데이터 삽입</comment>
         <sqlFile path="data/local/4.0-InsertUser.sql"
-                 relativeToChangelogFile="true"
-                 endDelimiter=";"
-        />
+                 relativeToChangelogFile="true"/>
     </changeSet>
 </databaseChangeLog>

@@ -2,7 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.3'
     id 'io.spring.dependency-management' version '1.0.13.RELEASE'
     id 'java'
-    id 'org.liquibase.gradle' version '2.1.0'
+    id 'org.liquibase.gradle' version '2.2.0'
 }
 
 group = 'starter-liquibase'
@@ -39,14 +39,10 @@ dependencies {
 
     // Liquibase
     //implementation 'org.liquibase:liquibase-core:4.15.0'
-    liquibaseRuntime 'org.liquibase:liquibase-core:4.15.0'
+    liquibaseRuntime 'org.liquibase:liquibase-core:4.16.1'
     liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:3.0.2'
-    liquibaseRuntime 'info.picocli:picocli:4.6.3'
-    liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:4.15.0'
+    liquibaseRuntime 'info.picocli:picocli:4.6.1'
     liquibaseRuntime 'mysql:mysql-connector-java:8.0.31'
-    liquibaseRuntime sourceSets.main.compileClasspath
-    liquibaseRuntime sourceSets.main.runtimeClasspath
-    liquibaseRuntime sourceSets.main.output
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -55,19 +51,19 @@ liquibase {
     activities {
         local {
             contexts 'local'
+            changelogFile "src/main/resources/db/changelog/db.changelog-master.xml"
             driver "com.mysql.cj.jdbc.Driver"
             url "jdbc:mysql://localhost:3312/liquibase_local?serverTimezone=UTC&characterEncoding=UTF-8"
             username "liquibase_starter"
             password "liquibase_starter"
-            changeLogFile "classpath:db/changelog/db.changelog-master.xml"
         }
         dev {
             contexts 'dev'
+            changelogFile "src/main/resources/db/changelog/db.changelog-master.xml"
             driver "com.mysql.cj.jdbc.Driver"
             url "jdbc:mysql://localhost:3312/liquibase_dev?serverTimezone=UTC&characterEncoding=UTF-8"
             username "liquibasedev"
             password "liquibasedev"
-            changeLogFile "classpath:db/changelog/db.changelog-master.xml"
         }
     }
 
