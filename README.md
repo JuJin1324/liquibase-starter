@@ -18,16 +18,9 @@
 >     id 'org.liquibase.gradle' version '2.2.0'
 > }
 > 
-> task copyResources(type: Copy) {
->     from "${projectDir}/src/main/resources"
->     into "${buildDir}/resources/main"
-> }
-> compileJava.dependsOn copyResources
-> update.dependsOn copyResources
-> 
 > dependencies {
 >     // Liquibase
->     //implementation 'org.liquibase:liquibase-core:4.15.0'
+>     //implementation 'org.liquibase:liquibase-core:4.16.1'
 >     liquibaseRuntime 'org.liquibase:liquibase-core:4.16.1'
 >     liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:3.0.2'
 >     liquibaseRuntime 'info.picocli:picocli:4.6.1'
@@ -57,16 +50,24 @@
 >         enabled: true
 > ``` 
 > application.yml 의 `enabled: true` 설정이 적용되려면 build.gradle 의 dependnecies 에서   
-> `liquibaseRuntime 'org.liquibase:liquibase-core:4.15.0'` 이 아닌   
-> `implementation 'org.liquibase:liquibase-core:4.15.0'` 로 선언되어야 한다.  
+> `liquibaseRuntime 'org.liquibase:liquibase-core:4.16.1'` 이 아닌   
+> `implementation 'org.liquibase:liquibase-core:4.16.1'` 로 선언되어야 한다.  
 
 ### context
 > `changeSet` 태그 및 `include` 태그에 `context` 애트리뷰트를 추가해서 컨텍스트에 따른 관리 가능  
 > ex. local, dev, prod 로 관리 가능
 
-### update
-> DB 테이블 xml 에 changeSet 생성 후에 `gradle update` 를 통해서 변경 내용을 DB 에 반영하거나
-> 서버를 구동하면 DB 에 자동 반영된다.
+### gradle update command
+> **Update**  
+> databasechangelog 테이블의 changelog 보다 db.changelog-master.xml 의 내용이 앞서가는 경우
+> 앞서가는 버전에 대해서 DBMS 에 반영한다.   
+> `gradle update`
+>
+> **UpdateSql**  
+> databasechangelog 테이블의 changelog 보다 db.changelog-master.xml 의 내용이 앞서가는 경우
+> 앞서가는 버전에 대해서 DBMS 에 반영하기 위한 쿼리의 내용을 콘솔에 출력한다. DBMS 에 업데이트는 반영되지 않는다.
+> 사용자가 출력된 업데이트 쿼리로 직접 작업하길 원할 때 사용한다.  
+> `gradle updateSql`
 
 ### rollback
 > liquibase 의 changeSet 로 변경한 부분을 다시 되돌리는게 rollback 이다.  
@@ -87,19 +88,7 @@
 > </changeSet>
 > ``` 
 
-### gradle rollbackCount command
-> **Update**  
-> databasechangelog 테이블의 changelog 보다 db.changelog-master.xml 의 내용이 앞서가는 경우 
-> 앞서가는 버전에 대해서 DBMS 에 반영한다.   
-> `gradle update`  
-> 
-> **UpdateSql**  
-> databasechangelog 테이블의 changelog 보다 db.changelog-master.xml 의 내용이 앞서가는 경우 
-> 앞서가는 버전에 대해서 DBMS 에 반영하기 위한 쿼리의 내용을 콘솔에 출력한다. DBMS 에 업데이트는 반영되지 않는다.
-> 사용자가 출력된 업데이트 쿼리로 직접 작업하길 원할 때 사용한다.  
-> `gradle updateSql`  
-> 
-> **Rollback**  
+### gradle rollback command
 > rollback 은 다음과 같이 Gradle 의 rollbackCount Task 를 통해서 rollback 한다.
 > `gradle rollbackCount -PliquibaseCommandValue=1`
 
