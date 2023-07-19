@@ -109,7 +109,7 @@
 ---
 
 ## db.changelog-master.xml
-> 가장 먼저 마스터 파일인 `db.changelog-master.xml` 을 생성한 후에 각 DB 테이블 별로 xml 파일을 만들어서 `changelog-master.xml` 에 `<include>` 한다.  
+> 가장 먼저 마스터 파일인 `db.changelog-master.xml` 을 생성한 후에 각 DB 테이블 별로 xml 파일을 만들어서 `db.changelog-master.xml` 에 `<include>` 한다.  
 > db.changelog-master.xml
 > ```xml
 > <?xml version="1.0" encoding="utf-8"?>
@@ -125,7 +125,6 @@
 >     <include file="db.changelog-1.0-CreateUser.xml" relativeToChangelogFile="true"/>
 >     <include file="db.changelog-2.0-CreateUserProfile.xml" relativeToChangelogFile="true"/>
 >     <include file="db.changelog-3.0_AlterUser.xml" relativeToChangelogFile="true"/>
->     <include file="db.changelog-3.1-AlterUser.xml" relativeToChangelogFile="true"/>
 >     <include file="db.changelog-4.0-InsertUser.xml" relativeToChangelogFile="true"/>
 >     <include file="db.changelog-5.0-InsertUserProfile.xml" relativeToChangelogFile="true"/>
 > </databaseChangeLog>
@@ -158,7 +157,7 @@
 > liquibase 를 통해서 쿼리를 실행하게 되면 `databasechangelog` 테이블이 생성되게 된다.  
 > databasechangelog 테이블의 comment 칼럼에 `comment` 태그 안에 적은 내용이 담기게 된다.  
 > ```xml
-> <changeSet id="changelog-X.0" author="jujin">
+> <changeSet id="changelog-1.0" author="jujin">
 >     <comment>회원 프로필 테이블 추가</comment>
 >     ...
 > </changeSet>
